@@ -1,5 +1,5 @@
-module.exports = (sequelize, Sequelize) => {
-    const Signup = sequelize.define("signup", {
+module.exports = (sequelizeConfig, Sequelize) => {
+    const Signup = sequelizeConfig.define("signup", {
         name: {
             type: Sequelize.STRING,
             allowNull: false

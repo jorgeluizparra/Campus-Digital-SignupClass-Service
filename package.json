@@ -4,8 +4,8 @@
   "description": "Signup service.",
   "main": "index.js",
   "scripts": {
-    "start": "node ./app/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node server.js",
+    "test": "mocha --timeout 10000"
   },
   "keywords": [
     "nodejs",
@@ -23,5 +23,10 @@
     "express": "^4.17.1",
     "mysql2": "^2.2.5",
     "sequelize": "^6.3.5"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^8.2.1"
   }
 }
