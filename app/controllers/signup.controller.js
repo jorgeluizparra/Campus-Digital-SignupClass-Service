@@ -38,12 +38,6 @@ exports.create = (req, res) => {
 // Retrieve all Registers from the database or specifics registers if search is set.
 exports.getAll = (req, res) => {
 
-    const schemaErrors = validationResult(req);
-
-    if(!schemaErrors.isEmpty()){
-        return res.status(403).send(schemaErrors.array())
-    }
-
     var search = req.query.search ? req.query.search : '';
     var page = req.query.page ? req.query.page : 0;
 
@@ -93,8 +87,8 @@ exports.update = (req, res) => {
     Signup.update(updateFields, { 
         where: { id : id }
     })
-        .then(res => {
-            if (res == 1) {
+        .then(num => {
+            if (num == 1) {
                 res.status(200).send({
                     message: `Cadastro ${id} atualizado com sucesso.`,
                     data: updateFields
@@ -120,20 +114,21 @@ exports.delete = (req, res) => {
     Signup.destroy({
         where: { id: id }
     })
-        .then(res => {
-            if (num == 1) {
-                res.status(200).send({
-                    message: `Cadastro ${id} atualizado com sucesso.`
-                });
-            } else {
-                res.status(200).send({
-                    message: `Não foi possivel deletar o cadastro ${id}.`
-                });
-            }
-            })
-        .catch(err => {
-            res.status(500).send({
-                message: `Erro ao tentar deletar o cadastro ${id}.`
+    .then(num => {
+        if (num == 1) {
+            res.status(200).send({
+                id: id,
+                message: 'Cadastro deletado com sucesso.'
             });
+        } else {
+            res.status(400).send({
+                message: 'Cadastro não foi encontrado.'
+            });
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: 'Erro ao tentar deletar o cadastro.'
         });
+    });
 };

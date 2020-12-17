@@ -7,15 +7,7 @@ module.exports = app => {
     var router = require("express").Router();
 
     // Get all registers
-    router.get("/", checkSchema({
-        search: {
-            in: ['query']
-        },
-        page: {
-            in: ['query'],
-            isInt: true
-        }
-    }), signup.getAll);
+    router.get("/", signup.getAll);
 
     // Create a new register
     router.post("/", checkSchema({
