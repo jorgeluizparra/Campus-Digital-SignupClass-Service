@@ -76,6 +76,16 @@ module.exports = app => {
             errorMessage: 'O email não foi enviado',
         }
     }), signup.update);
+
+    // Delete a register
+    router.delete("/:id", checkSchema({
+        id: {
+            in: ['params'],
+            isInt: true,
+            toInt: true,
+            errorMessage: 'O id esta errado.',
+        }
+    }), signup.delete);
   
     app.use('/api/v1/signups', router);
 };

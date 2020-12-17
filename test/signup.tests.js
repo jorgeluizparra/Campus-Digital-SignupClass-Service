@@ -97,16 +97,35 @@ describe('Signup', () => {
                 studentNumber: 123456,
                 cpf: 11122233355
             })
-            register.save((err, book) => {
+            register.save((err, register) => {
                 chai.request(server)
-                    .post('/api/v1/signups/' + register.id)
+                    .put('/api/v1/signups/' + register.id)
                     .send({
                         name: 'Teste2',
                         email: 'test2@test.com'
                     })
                     .end((err, res) => {
                         assert.equal(res.status, 200, "Error to update. Status different to 200.")
-                        assert.isObject(res.body, "Items is not an object.")
+                        done();
+                    })
+            })
+        });
+    });
+
+    // DELETE TEST
+    describe('/DELETE signup', () => {
+        it('It should delete a register', (done) => {
+            let register = new Signup({
+                name: 'test',
+                email: 'test@test.com',
+                studentNumber: 123456,
+                cpf: 11122233355
+            })
+            register.save((err, register) => {
+                chai.request(server)
+                    .delete('/api/v1/signups/' + register.id)
+                    .end((err, res) => {
+                        assert.equal(res.status, 200, "Error to delete. Status different to 200.")
                         done();
                     })
             })

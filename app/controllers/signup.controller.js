@@ -65,7 +65,7 @@ exports.getAll = (req, res) => {
 
 // Update a Register by the id in the request
 exports.update = (req, res) => {
-    
+
     const schemaErrors = validationResult(req);
 
     if(!schemaErrors.isEmpty()){
@@ -94,27 +94,46 @@ exports.update = (req, res) => {
         where: { id : id }
     })
         .then(res => {
-            res.send(res)
-            // if (res == 1) {
-            //     res.status(200).send({
-            //         message: `Cadastro ${id} atualizado com sucesso.`,
-            //         data: updateFields
-            //     })
-            // } else {
-            //     res.status(400).send({
-            //         message: `Não foi possivel atualizar o cadastro ${id}.`
-            //     })
-            // }
+            if (res == 1) {
+                res.status(200).send({
+                    message: `Cadastro ${id} atualizado com sucesso.`,
+                    data: updateFields
+                })
+            } else {
+                res.status(400).send({
+                    message: `Não foi possivel atualizar o cadastro ${id}.`
+                })
+            }
         })
         .catch(err => {
             res.status(500).send({
-                err: err
-                // message: `Erro ao tentar atualizar o cadastro ${id}.`
+                message: `Erro ao tentar atualizar o cadastro ${id}.`
             });
         })
 };
 
 // Delete a Register with the specified id in the request
 exports.delete = (req, res) => {
-    
+
+    const id = req.params.id;
+
+    Signup.destroy({
+        where: { id: id }
+    })
+        .then(res => {
+            if (num == 1) {
+                res.status(200).send({
+                    message: `Cadastro ${id} atualizado com sucesso.`
+                });
+            } else {
+                res.status(200).send({
+                    message: `Não foi possivel deletar o cadastro ${id}.`
+                });
+            }
+            })
+        .catch(err => {
+            res.status(500).send({
+                message: `Erro ao tentar deletar o cadastro ${id}.`
+            });
+        });
 };
