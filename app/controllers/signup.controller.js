@@ -1,29 +1,17 @@
+const { validationResult } = require("express-validator");
+const db = require("../models");
+const Signup = db.signup;
+
 // Import functions
 const functions = require( './functions/functions');
 
-const db = require("../models");
-const Signup = db.signup;
-const Op = db.Sequelize.Op;
-
 // Create a new register
 exports.create = (req, res) => {
-    
-    // Validate request
-    if (!req.body.name || !req.body.email || !req.body.studentNumber || !req.body.cpf) {
-        res.status(400).send({
-            message: "Todos os campos devem estar preenchidos."
-        });
-        return;
-    } else if ( Number.isInteger(req.body.studentNumber) ||  req.body.studentNumber.length != 6 ) {
-        res.status(400).send({
-            message: "O registro acadêmico deve ser um número com 6 digítos."
-        });
-        return;
-    } else if ( Number.isInteger(req.body.cpf) ||  req.body.cpf.length != 11 ) {
-        res.status(400).send({
-            message: "O registro acadêmico deve ser um número com 11 digítos."
-        });
-        return;
+
+    const schemaErrors = validationResult(req);
+
+    if(!schemaErrors.isEmpty()){
+        return res.status(403).send(schemaErrors.array())
     }
 
     // Create a Register
@@ -49,16 +37,15 @@ exports.create = (req, res) => {
 
 // Retrieve all Registers from the database or specifics registers if search is set.
 exports.getAll = (req, res) => {
+
+    const schemaErrors = validationResult(req);
+
+    if(!schemaErrors.isEmpty()){
+        return res.status(403).send(schemaErrors.array())
+    }
+
     var search = req.query.search ? req.query.search : '';
     var page = req.query.page ? req.query.page : 0;
-    
-    // Validate request
-    if (!Number.isInteger(page)) {
-        res.status(400).send({
-            message: "Valor de página inválido."
-        });
-        return;
-    } 
 
     const condition = functions.setSearchCondition(search)
     const { limit, offset } = functions.getPagination(page, 10);
@@ -78,7 +65,53 @@ exports.getAll = (req, res) => {
 
 // Update a Register by the id in the request
 exports.update = (req, res) => {
-  
+    
+    const schemaErrors = validationResult(req);
+
+    if(!schemaErrors.isEmpty()){
+        return res.status(403).send(schemaErrors.array())
+    }
+
+    const id = req.params.id;
+
+    const name = req.body.name;
+    const email = req.body.email;
+
+    const updateFields = {};
+
+    if (email && name) {
+        updateFields.name = name;
+        updateFields.email = email;
+    } else if (email && !name) {
+        updateFields.email =email;
+    } else if (name && !email) {
+        updateFields.name =name;
+    } else {
+        return res.status(400).send("Todos os campos estavam em branco.")
+    }
+
+    Signup.update(updateFields, { 
+        where: { id : id }
+    })
+        .then(res => {
+            res.send(res)
+            // if (res == 1) {
+            //     res.status(200).send({
+            //         message: `Cadastro ${id} atualizado com sucesso.`,
+            //         data: updateFields
+            //     })
+            // } else {
+            //     res.status(400).send({
+            //         message: `Não foi possivel atualizar o cadastro ${id}.`
+            //     })
+            // }
+        })
+        .catch(err => {
+            res.status(500).send({
+                err: err
+                // message: `Erro ao tentar atualizar o cadastro ${id}.`
+            });
+        })
 };
 
 // Delete a Register with the specified id in the request

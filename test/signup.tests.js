@@ -26,10 +26,11 @@ describe('Signup', () => {
         });
     });
 
+    // GET TEST
     describe('/GET signups', () => {
         it('It should get all registers', (done) => {
             chai.request(server)
-                .get('/api/v1/signups')
+                .get('/api/v1/signups?page=0')
                 .end((err, res) => {
                     assert.equal(res.status, 200, "Status different to 200.")
                     assert.isObject(res.body, "Body is not an object.")
@@ -37,11 +38,11 @@ describe('Signup', () => {
                     assert.hasAllKeys(res.body, ['totalItems', 'items', 'totalPages', 'page', 'nextPage','previousPage'], 'Body schema is wrong.');
                     done();
                 })
-        })
+        });
 
-        it('It should get registers filtering by null.', (done) => {
+        it('It should filter and get registers', (done) => {
             chai.request(server)
-                .get('/api/v1/signups?search=null')
+                .get('/api/v1/signups?search=teste&page=0')
                 .end((err, res) => {
                     assert.equal(res.status, 200, "Status different to 200.")
                     assert.isObject(res.body, "Body is not an object.")
@@ -49,45 +50,10 @@ describe('Signup', () => {
                     assert.hasAllKeys(res.body, ['totalItems', 'items', 'totalPages', 'page', 'nextPage','previousPage'], 'Body schema is wrong.');
                     done();
                 })
-        })
-
-        it('It should get registers filtering by string.', (done) => {
-            chai.request(server)
-                .get('/api/v1/signups?search=teste')
-                .end((err, res) => {
-                    assert.equal(res.status, 200, "Status different to 200.")
-                    assert.isObject(res.body, "Body is not an object.")
-                    assert.isArray(res.body.items, "Items is not an array.")
-                    assert.hasAllKeys(res.body, ['totalItems', 'items', 'totalPages', 'page', 'nextPage','previousPage'], 'Body schema is wrong.');
-                    done();
-                })
-        })
-
-        it('It should get registers filtering by number.', (done) => {
-            chai.request(server)
-                .get('/api/v1/signups?search=2020')
-                .end((err, res) => {
-                    assert.equal(res.status, 200, "Status different to 200.")
-                    assert.isObject(res.body, "Body is not an object.")
-                    assert.isArray(res.body.items, "Items is not an array.")
-                    assert.hasAllKeys(res.body, ['totalItems', 'items', 'totalPages', 'page', 'nextPage','previousPage'], 'Body schema is wrong.');
-                    done();
-                })
-        })
-
-        it('It should get registers filtering by boolean.', (done) => {
-            chai.request(server)
-                .get('/api/v1/signups?search=true')
-                .end((err, res) => {
-                    assert.equal(res.status, 200, "Status different to 200.")
-                    assert.isObject(res.body, "Body is not an object.")
-                    assert.isArray(res.body.items, "Items is not an array.")
-                    assert.hasAllKeys(res.body, ['totalItems', 'items', 'totalPages', 'page', 'nextPage','previousPage'], 'Body schema is wrong.');
-                    done();
-                })
-        })        
+        });
     });
 
+    // POST TEST
     describe('/POST signup', () => {
         it('It should create a register', (done) => {
             chai.request(server)
@@ -99,15 +65,14 @@ describe('Signup', () => {
                     cpf: 11122233344
                 })
                 .end((err, res) => {
-                    assert.equal(res.status, 200, "Status different to 200.")
+                    assert.equal(res.status, 200, "Error to signup. Status different to 200.")
                     assert.isObject(res.body, "Items is not an object.")
                     assert.hasAllKeys(res.body, ['id', 'name', 'email', 'studentNumber', 'cpf','updatedAt', 'createdAt'], 'Body schema is wrong.');
-                    console.log(res);
                     done();
                 })
-        })
+        });
 
-        it('Null name, It should not create a register', (done) => {
+        it('It should not create a register', (done) => {
             chai.request(server)
                 .post('/api/v1/signups')
                 .send({
@@ -117,116 +82,35 @@ describe('Signup', () => {
                     cpf: 11122233344
                 })
                 .end((err, res) => {
-                    assert.equal(res.status, 400, "Status different to 400. ")
+                    assert.notEqual(res.status, 200, "Signup was a success.")
                     done();
                 })
-        })
-
-        it('Invalid email, It should not create a register', (done) => {
-            chai.request(server)
-                .post('/api/v1/signups')
-                .send({
-                    name: 'Teste',
-                    email: 'testtest.com',
-                    studentNumber: 123456,
-                    cpf: 11122233344
-                })
-                .end((err, res) => {
-                    assert.equal(res.status, 400, "Status different to 400. ")
-                    done();
-                })
-        })
-
-        it('Empty student number, It should not create a register', (done) => {
-            chai.request(server)
-                .post('/api/v1/signups')
-                .send({
-                    name: 'Teste',
-                    email: 'test@test.com',
-                    studentNumber: '',
-                    cpf: 11122233344
-                })
-                .end((err, res) => {
-                    assert.equal(res.status, 400, "Status different to 400. ")
-                    done();
-                })
-        })
-
-        it('Student number as string, It should not create a register', (done) => {
-            chai.request(server)
-                .post('/api/v1/signups')
-                .send({
-                    name: 'Teste',
-                    email: 'test@test.com',
-                    studentNumber: 'abcdef',
-                    cpf: 11122233344
-                })
-                .end((err, res) => {
-                    assert.equal(res.status, 400, "Status different to 400. ")
-                    done();
-                })
-        })
-
-        it('Student number without 6 caracthers, It should not create a register', (done) => {
-            chai.request(server)
-                .post('/api/v1/signups')
-                .send({
-                    name: 'Teste',
-                    email: 'test@test.com',
-                    studentNumber: 12345,
-                    cpf: 11122233344
-                })
-                .end((err, res) => {
-                    assert.equal(res.status, 400, "Status different to 400. ")
-                    done();
-                })
-        })
-
-        it('Empty CPF, It should not create a register', (done) => {
-            chai.request(server)
-                .post('/api/v1/signups')
-                .send({
-                    name: 'Teste',
-                    email: 'test@test.com',
-                    studentNumber: 123456,
-                    cpf: ''
-                })
-                .end((err, res) => {
-                    assert.equal(res.status, 400, "Status different to 400. ")
-                    done();
-                })
-        })
-
-        it('CPF as string, It should not create a register', (done) => {
-            chai.request(server)
-                .post('/api/v1/signups')
-                .send({
-                    name: 'Teste',
-                    email: 'test@test.com',
-                    studentNumber: 123456,
-                    cpf: '11122233344'
-                })
-                .end((err, res) => {
-                    assert.equal(res.status, 400, "Status different to 400. ")
-                    done();
-                })
-        })
-
-        it('CPF without 11 caracthers, It should not create a register', (done) => {
-            chai.request(server)
-                .post('/api/v1/signups')
-                .send({
-                    name: 'Teste',
-                    email: 'test@test.com',
-                    studentNumber: 12345,
-                    cpf: 1112223334
-                })
-                .end((err, res) => {
-                    assert.equal(res.status, 400, "Status different to 400. ")
-                    done();
-                })
-        })
-
+        });
     });
 
-})
+    // PUT TEST
+    describe('/PUT signup', () => {
+        it('It should update a register', (done) => {
+            let register = new Signup({
+                name: 'test',
+                email: 'test@test.com',
+                studentNumber: 123456,
+                cpf: 11122233355
+            })
+            register.save((err, book) => {
+                chai.request(server)
+                    .post('/api/v1/signups/' + register.id)
+                    .send({
+                        name: 'Teste2',
+                        email: 'test2@test.com'
+                    })
+                    .end((err, res) => {
+                        assert.equal(res.status, 200, "Error to update. Status different to 200.")
+                        assert.isObject(res.body, "Items is not an object.")
+                        done();
+                    })
+            })
+        });
+    });
+
+});

@@ -6,35 +6,17 @@ module.exports = (sequelizeConfig, Sequelize) => {
         },
         email: {
             type: Sequelize.STRING,
-            allowNull: false,
-            validate: {
-                isEmail: {
-                    args: true,
-                    msg: 'O valor passado não é um email.'
-                }
-            }
+            allowNull: false
         },
         studentNumber: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER ,
             allowNull: false,
-            unique: true,
-            validate: {
-                len: {
-                    args: 6,
-                    msg: 'O registro acadêmico deve conter 6 numeros.'
-                }
-            }
+            unique: true
         },
         cpf: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER ,
             allowNull: false,
-            unique: true,
-            validate: {
-                len: {
-                    args: 11,
-                    msg: 'O registro acadêmico deve conter 11 numeros.'
-                }
-            }
+            unique: true
         }
     });
   

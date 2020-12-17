@@ -1,3 +1,6 @@
+const db = require("../../models");
+const Op = db.Sequelize.Op;
+
 // Pagination
 exports.getPagination  = (page, limit) => {
 
