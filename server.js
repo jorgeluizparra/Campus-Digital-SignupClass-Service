@@ -4,11 +4,12 @@ const cors = require("cors");
 
 const app = express();
 
-var corsOptions = {
-  origin: "http://localhost:8081"
-};
-
-app.use(cors(corsOptions));
+/* Recommended for production */
+// var corsOptions = {
+//   origin: "http://localhost:8080"
+// };
+// app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(bodyParser.json());
 

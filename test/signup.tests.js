@@ -109,6 +109,12 @@ describe('Signup', () => {
                         done();
                     })
             })
+            .then(res => {
+                done()
+            })
+            .catch(err => {
+                done()
+            })
         });
     });
 
@@ -128,6 +134,12 @@ describe('Signup', () => {
                         assert.equal(res.status, 200, "Error to delete. Status different to 200.")
                         done();
                     })
+            })
+            .then(res => {
+                done()
+            })
+            .catch(err => {
+                done()
             })
         });
     });
