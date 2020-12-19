@@ -42,7 +42,7 @@ exports.getAll = (req, res) => {
     var page = req.query.page ? req.query.page : 0;
 
     const condition = functions.setSearchCondition(search)
-    const { limit, offset } = functions.getPagination(page, 10);
+    const { limit, offset } = functions.getPagination(page, 5);
 
     Signup.findAndCountAll({where: condition, limit, offset})
         .then(data => {
