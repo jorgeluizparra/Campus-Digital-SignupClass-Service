@@ -27,7 +27,7 @@ describe('Signup', () => {
     });
 
     // GET TEST
-    describe('/GET signups', () => {
+    describe('GET', () => {
         it('It should get all registers', (done) => {
             chai.request(server)
                 .get('/api/v1/signups?page=0')
@@ -35,7 +35,7 @@ describe('Signup', () => {
                     assert.equal(res.status, 200, "Status different to 200.")
                     assert.isObject(res.body, "Body is not an object.")
                     assert.isArray(res.body.items, "Items is not an array.")
-                    assert.hasAllKeys(res.body, ['totalItems', 'items', 'totalPages', 'page', 'nextPage','previousPage'], 'Body schema is wrong.');
+                    assert.hasAllKeys(res.body, ['totalItems', 'items', 'totalPages', 'page', 'nextPage','previousPage', 'search'], 'Body schema is wrong.');
                     done();
                 })
         });
@@ -47,14 +47,14 @@ describe('Signup', () => {
                     assert.equal(res.status, 200, "Status different to 200.")
                     assert.isObject(res.body, "Body is not an object.")
                     assert.isArray(res.body.items, "Items is not an array.")
-                    assert.hasAllKeys(res.body, ['totalItems', 'items', 'totalPages', 'page', 'nextPage','previousPage'], 'Body schema is wrong.');
+                    assert.hasAllKeys(res.body, ['totalItems', 'items', 'totalPages', 'page', 'nextPage','previousPage', 'search'], 'Body schema is wrong.');
                     done();
                 })
         });
     });
 
     // POST TEST
-    describe('/POST signup', () => {
+    describe('POST', () => {
         it('It should create a register', (done) => {
             chai.request(server)
                 .post('/api/v1/signups')
@@ -77,19 +77,52 @@ describe('Signup', () => {
                 .post('/api/v1/signups')
                 .send({
                     name: '',
-                    email: 'test@test.com',
+                    email: 'teste@teste.com',
                     studentNumber: 123456,
-                    cpf: 11122233344
+                    cpf: 12345678901
                 })
                 .end((err, res) => {
-                    assert.notEqual(res.status, 200, "Signup was a success.")
+                    assert.notEqual(res.status, 200, "Register can not have empty values.")
+                    // console.log(res.body)
+                    assert.isArray(res.body, "Items is not an array.")
+                    assert.exists(res.body[0].msg, 'Message is not set.');
+                    assert.isString(res.body[0].msg, "Message is not a string.")
                     done();
                 })
+        });
+
+        it('It should not create a register', (done) => {
+            let payload = {
+                name: 'test',
+                email: 'test@test.com',
+                studentNumber: 123456,
+                cpf: 11122233355
+            }
+            let register = new Signup(payload)
+            register.save((err, payload) => {
+                chai.request(server)
+                .post('/api/v1/signups')
+                .send(payload)
+                .end((err, res) => {
+                    assert.notEqual(res.status, 200, "Register values must be unique.")
+                    console.log(res)
+                    assert.isArray(res.body, "Items is not an array.")
+                    assert.exists(res.body[0].msg, 'Message is not set.');
+                    assert.isString(res.body[0].msg, "Message is not a string.")
+                    done();
+                })
+            })
+            .then(res => {
+                done()
+            })
+            .catch(err => {
+                done()
+            })
         });
     });
 
     // PUT TEST
-    describe('/PUT signup', () => {
+    describe('PUT', () => {
         it('It should update a register', (done) => {
             let register = new Signup({
                 name: 'test',
@@ -119,7 +152,7 @@ describe('Signup', () => {
     });
 
     // DELETE TEST
-    describe('/DELETE signup', () => {
+    describe('DELETE', () => {
         it('It should delete a register', (done) => {
             let register = new Signup({
                 name: 'test',
@@ -132,6 +165,29 @@ describe('Signup', () => {
                     .delete('/api/v1/signups/' + register.id)
                     .end((err, res) => {
                         assert.equal(res.status, 200, "Error to delete. Status different to 200.")
+                        done();
+                    })
+            })
+            .then(res => {
+                done()
+            })
+            .catch(err => {
+                done()
+            })
+        });
+
+        it('It should not delete a register', (done) => {
+            let register = new Signup({
+                name: 'test',
+                email: 'test@test.com',
+                studentNumber: 123456,
+                cpf: 11122233355
+            })
+            register.save((err, register) => {
+                chai.request(server)
+                    .delete('/api/v1/signups/' + (register.id + 1) )
+                    .end((err, res) => {
+                        assert.notEqual(res.status, 200, "Post was deleted.")
                         done();
                     })
             })
