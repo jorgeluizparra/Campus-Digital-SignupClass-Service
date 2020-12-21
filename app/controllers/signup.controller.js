@@ -29,8 +29,7 @@ exports.create = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-            message:
-                err.message || "Ocorreu um erro ao tentar salvar o cadastro."
+                message: "Ocorreu um erro ao tentar salvar o cadastro."
             });
         });
 };
@@ -42,7 +41,7 @@ exports.getAll = (req, res) => {
     var page = req.query.page ? req.query.page : 0;
 
     const condition = functions.setSearchCondition(search)
-    const { limit, offset } = functions.getPagination(page, 5);
+    const { limit, offset } = functions.getPagination(page, 3);
 
     Signup.findAndCountAll({where: condition, limit, offset})
         .then(data => {
@@ -51,7 +50,7 @@ exports.getAll = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Ocorreu algum erro ao tentar buscar os cadastros."
+                msg: "Ocorreu algum erro ao tentar buscar os cadastros."
             })
         })
     
@@ -90,18 +89,18 @@ exports.update = (req, res) => {
         .then(num => {
             if (num == 1) {
                 res.status(200).send({
-                    message: `Cadastro ${id} atualizado com sucesso.`,
+                    msg: 'Cadastro atualizado com sucesso.',
                     data: updateFields
                 })
             } else {
                 res.status(400).send({
-                    message: `Não foi possivel atualizar o cadastro ${id}.`
+                    msg: 'Não foi possivel atualizar o cadastro.'
                 })
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: `Erro ao tentar atualizar o cadastro ${id}.`
+                msg: 'Erro ao tentar atualizar o cadastro.'
             });
         })
 };
@@ -118,17 +117,17 @@ exports.delete = (req, res) => {
         if (num == 1) {
             res.status(200).send({
                 id: id,
-                message: 'Cadastro deletado com sucesso.'
+                msg: 'Cadastro deletado com sucesso.'
             });
         } else {
             res.status(400).send({
-                message: 'Cadastro não foi encontrado.'
+                msg: 'Cadastro não foi encontrado.'
             });
         }
     })
     .catch(err => {
         res.status(500).send({
-            message: 'Erro ao tentar deletar o cadastro.'
+            msg: 'Erro ao tentar deletar o cadastro.'
         });
     });
 };
