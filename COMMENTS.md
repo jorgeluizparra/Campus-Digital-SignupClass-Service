@@ -29,7 +29,7 @@ Backend:
 
 3. O que você melhoraria se tivesse mais tempo
 
-Eu teria escrito mais testes para as APIs, teria escrito testes para a aplicação frontend e trabalhando mais com as mensagens no frontend.
+Eu teria escrito mais testes para as APIs, teria escrito testes para a aplicação frontend e trabalhado mais com as mensagens no frontend.
 
 4. Quais requisitos obrigatórios que não foram entregues
 Todos os requisitos foram entregues.
