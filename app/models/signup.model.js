@@ -9,12 +9,12 @@ module.exports = (sequelizeConfig, Sequelize) => {
             allowNull: false
         },
         studentNumber: {
-            type: Sequelize.INTEGER ,
+            type: Sequelize.STRING ,
             allowNull: false,
             unique: true
         },
         cpf: {
-            type: Sequelize.INTEGER ,
+            type: Sequelize.STRING ,
             allowNull: false,
             unique: true
         }

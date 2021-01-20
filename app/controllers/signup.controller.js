@@ -28,7 +28,7 @@ exports.create = (req, res) => {
             res.send(data);
         })
         .catch(err => {
-            res.status(500).send({
+            res.status(400).send({
                 message: "Ocorreu um erro ao tentar salvar o cadastro."
             });
         });
@@ -49,7 +49,7 @@ exports.getAll = (req, res) => {
             res.send(response)
         })
         .catch(err => {
-            res.status(500).send({
+            res.status(400).send({
                 msg: "Ocorreu algum erro ao tentar buscar os cadastros."
             })
         })
@@ -99,7 +99,7 @@ exports.update = (req, res) => {
             }
         })
         .catch(err => {
-            res.status(500).send({
+            res.status(400).send({
                 msg: 'Erro ao tentar atualizar o cadastro.'
             });
         })
@@ -126,7 +126,7 @@ exports.delete = (req, res) => {
         }
     })
     .catch(err => {
-        res.status(500).send({
+        res.status(400).send({
             msg: 'Erro ao tentar deletar o cadastro.'
         });
     });
